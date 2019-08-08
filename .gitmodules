@@ -1,0 +1,3 @@
+[submodule "domainD"]
+	path = domainD
+	url = https://github.com/veljkokokanovic/domainD.git
