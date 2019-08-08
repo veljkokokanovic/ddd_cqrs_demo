@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  sqlexpress:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Passw0rd"
+      MSSQL_PID: "Express"
+    container_name: sql_express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql:/var/opt/mssql:rw
+    networks:
+      - ddd_demo
+
+  rabbitmq:
+    image: rabbitmq:3.7.17-management
+    container_name: rabbitmq
+    ports: 
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbit:/var/lib/rabbitmq:rw
+      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    networks:
+      - ddd_demo
+
+volumes:
+  mssql:
+    driver: local
+  rabbit:
+    driver: local
+
+networks:
+  ddd_demo:
+    driver: bridge
