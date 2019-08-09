@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +26,22 @@ namespace UI.Gateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddHttpClient(HttpClients.ProductApi, client =>
+                {
+                    client.BaseAddress = new Uri(Configuration[HttpClients.ProductApi]);
+                    client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                }).Services
+                .AddHttpClient(HttpClients.OrderApi, client =>
+                {
+                    client.BaseAddress = new Uri(Configuration[HttpClients.OrderApi]);
+                    client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                }).Services
+                .AddHttpClient(HttpClients.DeliveryApi, client =>
+                {
+                    client.BaseAddress = new Uri(Configuration[HttpClients.DeliveryApi]);
+                    client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
