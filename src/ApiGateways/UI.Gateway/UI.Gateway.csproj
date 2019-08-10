@@ -6,9 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetWebApi.FiveLevelsOfMediaType" Version="0.3.2" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="5.5.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\Order\Domain\Order.Commands\Order.Commands\Order.Commands.csproj" />
+    <ProjectReference Include="..\..\Shared\MassTransit.Extensions\MassTransit.Extensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Delivery\Commands\" />
   </ItemGroup>
 
 </Project>

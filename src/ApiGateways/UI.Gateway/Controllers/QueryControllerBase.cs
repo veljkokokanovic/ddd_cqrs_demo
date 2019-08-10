@@ -10,12 +10,11 @@ namespace UI.Gateway.Controllers
 {
     [ApiController]
     [Produces("application/json")]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
-    public class ControllerBase : Controller
+    public class QueryControllerBase : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public ControllerBase(IHttpClientFactory clientFactory)
+        public QueryControllerBase(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }

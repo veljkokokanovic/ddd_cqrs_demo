@@ -1,30 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using MassTransit;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using AutoMapper;
+using GreenPipes;
+using MassTransit.Extensions;
+using Microsoft.AspNetCore.Http;
+using Order.Commands;
 
 namespace UI.Gateway
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
+            LoggerFactory = loggerFactory;
         }
 
         public IConfiguration Configuration { get; }
 
+        private ILoggerFactory LoggerFactory { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services
                 .AddHttpClient(HttpClients.ProductApi, client =>
@@ -42,6 +51,9 @@ namespace UI.Gateway
                     client.BaseAddress = new Uri(Configuration[HttpClients.DeliveryApi]);
                     client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
                 });
+
+            services.AddHttpContextAccessor();
+            services.AddMassTransit(ConfigureBus);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +65,48 @@ namespace UI.Gateway
             }
 
             app.UseMvc();
+        }
+
+        private void ConfigureBus(IServiceCollectionConfigurator configurator)
+        {
+            configurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                var busConfig = Configuration.GetSection("Bus");
+                var host = cfg.ConfigureHost(busConfig);
+                cfg.ConfigureSend(sendPipe =>
+                {
+                    sendPipe.UseSendFilter(new CorrelationIdEstablisher(provider));
+                });
+
+                EndpointConvention.Map<AddProductToOrder>(new Uri(new Uri(busConfig["Host"]), nameof(AddProductToOrder)));
+
+            }));
+        }
+    }
+
+    public class CorrelationIdEstablisher : IFilter<SendContext>
+    {
+        private IServiceProvider _serviceProvider;
+
+        public CorrelationIdEstablisher(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public Task Send(SendContext context, IPipe<SendContext> next)
+        {
+            var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            if (httpContext.Response.Headers.ContainsKey(KnownHeaders.CorrelationId))
+            {
+                context.Headers.Set(MassTransit.Extensions.KnownHeaders.CorrelationId, httpContext.Response.Headers[KnownHeaders.CorrelationId].FirstOrDefault());
+            }
+
+            return next.Send(context);
+        }
+
+        public void Probe(ProbeContext context)
+        {
+            context.CreateFilterScope(nameof(CorrelationIdEstablisher));
         }
     }
 }

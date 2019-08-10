@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Delivery.EventSubscription
+namespace NEventStore.EventSubscription
 {
     class Program
     {
