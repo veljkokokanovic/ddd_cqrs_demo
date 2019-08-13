@@ -12,8 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\domainD\src\domainD.Repository.NEventStore\domainD.Repository.NEventStore.csproj" />
-    <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\CommandHandler.Host.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
     <ProjectReference Include="..\..\Domain\Order.Commands\Order.Commands\Order.Commands.csproj" />
+    <ProjectReference Include="..\..\Domain\Order.Domain\Order.Domain\Order.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

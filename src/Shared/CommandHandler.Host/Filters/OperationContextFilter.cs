@@ -5,7 +5,7 @@ using GreenPipes;
 using MassTransit;
 using MassTransit.Extensions;
 
-namespace CommandHandler.Host.Filters
+namespace Console.Host.Filters
 {
     public class OperationContextFilter : IFilter<ConsumeContext>
     {
@@ -15,6 +15,8 @@ namespace CommandHandler.Host.Filters
             {
                 OperationContext.CorrelationId = correlationGuid;
             }
+
+            OperationContext.UserId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
             return next.Send(context);
         }

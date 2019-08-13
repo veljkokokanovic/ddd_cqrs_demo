@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
 
-namespace CommandHandler.Host
+namespace Console.Host
 {
     public class BusService : IHostedService
     {

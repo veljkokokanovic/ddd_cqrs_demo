@@ -1,8 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+    <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\domainD\src\domainD.EventSubscription.NEventStore\domainD.EventSubscription.NEventStore.csproj" />
+    <ProjectReference Include="..\..\..\..\..\domainD\src\domainD.Repository.NEventStore\domainD.Repository.NEventStore.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\MassTransit.Extensions\MassTransit.Extensions.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\ReadModel.Repository.MsSql\ReadModel.Repository.MsSql\ReadModel.Repository.MsSql.csproj" />
+    <ProjectReference Include="..\..\..\Order\Domain\Order.Events\Order.Events\Order.Events.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

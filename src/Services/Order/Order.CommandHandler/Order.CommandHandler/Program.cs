@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using CommandHandler.Host;
+using Console.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 

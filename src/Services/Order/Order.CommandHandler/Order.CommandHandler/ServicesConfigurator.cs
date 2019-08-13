@@ -1,5 +1,4 @@
-﻿using CommandHandler.Host;
-using domainD;
+﻿using domainD;
 using domainD.Repository.NEventStore;
 using GreenPipes;
 using MassTransit;
@@ -15,7 +14,8 @@ using Order.Commands;
 using System;
 using System.Data.SqlClient;
 using System.Linq;
-using CommandHandler.Host.Filters;
+using Console.Host;
+using Console.Host.Filters;
 
 namespace Order.CommandHandler
 {
