@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Order.CommandHandler.CommandHandlers
 {
-    public class CompleteCommandHandler : ICommandHandler<CompleteOrder>
+    public class CompleteOrderCommandHandler : ICommandHandler<CompleteOrder>
     {
         private readonly IRepository<Domain.Order> _repository;
 
-        public CompleteCommandHandler(IRepository<Domain.Order> repository)
+        public CompleteOrderCommandHandler(IRepository<Domain.Order> repository)
         {
             _repository = repository;
         }

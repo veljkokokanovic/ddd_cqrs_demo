@@ -11,11 +11,13 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
+using Delivery.Commands;
 using GreenPipes;
 using MassTransit.Extensions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Converters;
 using Order.Commands;
+using PlaceOrder = Order.Commands.PlaceOrder;
 
 namespace UI.Gateway
 {
@@ -86,6 +88,9 @@ namespace UI.Gateway
                 EndpointConvention.Map<RemoveProduct>(new Uri(new Uri(busConfig["Host"]), nameof(RemoveProduct)));
                 EndpointConvention.Map<SetProductQuantity>(new Uri(new Uri(busConfig["Host"]), nameof(SetProductQuantity)));
 
+                EndpointConvention.Map<StartDelivery>(new Uri(new Uri(busConfig["Host"]), nameof(StartDelivery)));
+                EndpointConvention.Map<ReturnOrder>(new Uri(new Uri(busConfig["Host"]), nameof(ReturnOrder)));
+                EndpointConvention.Map<DeliverOrder>(new Uri(new Uri(busConfig["Host"]), nameof(DeliverOrder)));
             }));
         }
     }

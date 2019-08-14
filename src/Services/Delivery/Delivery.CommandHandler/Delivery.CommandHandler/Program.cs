@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Console.Host;
+using Microsoft.Extensions.Hosting;
 
 namespace Delivery.CommandHandler
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            await new HostBuilder()
+                .AddConfigFile()
+                .ConfigureServices(ServicesConfigurator.ConfigureBus)
+                .ConfigureServices(ServicesConfigurator.ConfigureDomain)
+                .ConfigureServices(ServicesConfigurator.ConfigureEventStore)
+                .RunConsoleAsync();
         }
     }
 }

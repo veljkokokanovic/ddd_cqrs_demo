@@ -62,7 +62,7 @@ namespace Order.Domain
 
             if (!IsPlaced)
             {
-                RaiseEvent(new OrderPlaced(delivery));
+                RaiseEvent(new OrderPlaced(delivery, UserId));
             }
         }
 

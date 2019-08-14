@@ -12,12 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Services\Delivery\Domain\Delivery.Commands\Delivery.Commands\Delivery.Commands.csproj" />
     <ProjectReference Include="..\..\Services\Order\Domain\Order.Commands\Order.Commands\Order.Commands.csproj" />
     <ProjectReference Include="..\..\Shared\MassTransit.Extensions\MassTransit.Extensions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Delivery\Commands\" />
   </ItemGroup>
 
 </Project>

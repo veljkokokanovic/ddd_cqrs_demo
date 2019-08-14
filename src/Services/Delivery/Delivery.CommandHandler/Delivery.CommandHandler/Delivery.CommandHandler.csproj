@@ -1,13 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="5.5.4" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.4" />
+    <ProjectReference Include="..\..\..\..\..\domainD\src\domainD.Repository.NEventStore\domainD.Repository.NEventStore.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
+    <ProjectReference Include="..\..\Domain\Delivery.Commands\Delivery.Commands\Delivery.Commands.csproj" />
+    <ProjectReference Include="..\..\Domain\Delivery.Domain\Delivery.Domain\Delivery.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

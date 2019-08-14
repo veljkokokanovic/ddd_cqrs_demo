@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using domainD;
-using SharedKernel;
 
-namespace Order.Events
+namespace Delivery.Events
 {
     public class OrderPlaced : DomainEvent
     {
-        public OrderPlaced(Delivery deliveryInfo, Guid userId)
+        public OrderPlaced(SharedKernel.Delivery deliveryInfo, Guid userId)
         {
             DeliveryInfo = deliveryInfo;
             UserId = userId;
@@ -16,6 +13,6 @@ namespace Order.Events
 
         public Guid UserId { get; set; }
 
-        public Delivery DeliveryInfo { get; set; }
+        public SharedKernel.Delivery DeliveryInfo { get; set; }
     }
 }
