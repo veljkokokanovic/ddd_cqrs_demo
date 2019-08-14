@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using domainD;
 using Order.Events;
+using SharedKernel;
 
 namespace Order.Domain
 {
@@ -14,13 +15,13 @@ namespace Order.Domain
 
         private HashSet<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
 
-        private Address DeliveryAddress { get; set; }
-
-        private string DeliveryDate { get; set; }
-
-        private string PhoneNumber { get; set; }
-
         private Guid UserId { get; set; }
+
+        private bool IsPlaced { get; set; }
+
+        private bool IsComplete { get; set; }
+
+        private bool IsCancelled { get; set; }
 
         public void AddProduct(string sku, int quantity, decimal price)
         {
@@ -34,20 +35,75 @@ namespace Order.Domain
                 throw new ArgumentException("Quantity must be > 0", nameof(quantity));
             }
 
+            EnsureModify();
+
             if (TryGetOrderItem(sku, out var item))
             {
-                RaiseEvent(new ProductQuantityChanged { LineItemId = sku, From = item.Quantity, To = item.Quantity + quantity });
+                RaiseEvent(new ProductQuantityChanged(sku, item.Quantity, item.Quantity + quantity));
             }
             else
             {
-                RaiseEvent(new ProductAddedToOrder { Quantity = quantity, Sku = sku, UserId = UserId, Price = price});
+                RaiseEvent(new ProductAddedToOrder(sku, quantity, price, UserId));
             }
         }
 
-        private bool TryGetOrderItem(string sku, out OrderItem item)
+
+        public void Place(Delivery delivery)
+        {
+            if (delivery == null)
+            {
+                throw new ArgumentNullException(nameof(delivery));
+            }
+
+            if (IsCancelled || IsComplete)
+            {
+                throw new InvalidOperationException($"Order can not be placed. It is cancelled or complete.");
+            }
+
+            if (!IsPlaced)
+            {
+                RaiseEvent(new OrderPlaced(delivery));
+            }
+        }
+
+        public void Complete()
+        {
+            if (!IsPlaced || IsCancelled)
+            {
+                throw new InvalidOperationException($"Order can not be completed. It is not placed or cancelled.");
+            }
+
+            if (!IsComplete)
+            {
+                RaiseEvent(new OrderCompleted());
+            }
+        }
+
+        public void Cancel()
+        {
+            if (IsComplete)
+            {
+                throw new InvalidOperationException($"Order can not be cancelled. It is completed.");
+            }
+
+            if (!IsCancelled)
+            {
+                RaiseEvent(new OrderCancelled());
+            }
+        }
+
+        public bool TryGetOrderItem(string sku, out OrderItem item)
         {
             item = Items.SingleOrDefault(i => string.Equals(i.Identity, sku));
             return item != null;
+        }
+
+        private void EnsureModify()
+        {
+            if (IsCancelled || IsComplete || IsPlaced)
+            {
+                throw new InvalidOperationException($"Can not modify order.");
+            }
         }
 
         private void Handle(ProductAddedToOrder @event)
@@ -62,10 +118,31 @@ namespace Order.Domain
 
         private void Handle(ProductQuantityChanged @event)
         {
-            if (TryGetOrderItem(@event.LineItemId, out var item))
+            if (TryGetOrderItem(@event.Sku, out var item))
             {
                 item.Quantity = @event.To;
             }
+        }
+
+        private void Handle(OrderPlaced @event)
+        {
+            IsPlaced = true;
+        }
+
+        private void Handle(OrderCancelled @event)
+        {
+            IsCancelled = true;
+        }
+
+        private void Handle(OrderCompleted @event)
+        {
+            IsComplete = true;
+        }
+
+        private void Handle(ProductRemoved @event)
+        {
+            EnsureModify();
+            Items.RemoveWhere(i => i.Identity == @event.Sku);
         }
     }
 }

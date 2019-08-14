@@ -79,6 +79,10 @@ namespace UI.Gateway
                 });
 
                 EndpointConvention.Map<AddProductToOrder>(new Uri(new Uri(busConfig["Host"]), nameof(AddProductToOrder)));
+                EndpointConvention.Map<CancelOrder>(new Uri(new Uri(busConfig["Host"]), nameof(CancelOrder)));
+                EndpointConvention.Map<PlaceOrder>(new Uri(new Uri(busConfig["Host"]), nameof(PlaceOrder)));
+                EndpointConvention.Map<RemoveProduct>(new Uri(new Uri(busConfig["Host"]), nameof(RemoveProduct)));
+                EndpointConvention.Map<SetProductQuantity>(new Uri(new Uri(busConfig["Host"]), nameof(SetProductQuantity)));
 
             }));
         }

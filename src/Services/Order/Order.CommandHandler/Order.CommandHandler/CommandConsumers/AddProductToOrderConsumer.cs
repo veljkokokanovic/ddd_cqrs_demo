@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using domainD;
+﻿using domainD;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 using Order.Commands;
+using System.Threading.Tasks;
 
 namespace Order.CommandHandler.CommandConsumers
 {

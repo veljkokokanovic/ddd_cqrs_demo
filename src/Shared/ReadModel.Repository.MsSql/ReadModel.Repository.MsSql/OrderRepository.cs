@@ -47,7 +47,7 @@ namespace ReadModel.Repository.MsSql
         public override async Task SaveAsync(Order.Order order)
         {
             var deletesql = "DELETE FROM OrderItems WHERE OrderId = @OrderId; DELETE FROM Orders WHERE Id = @OrderId;";
-            var orderSql = "INSERT INTO Orders (Id, UserId, PlacedOn) VALUES (@Id, @UserId, @PlacedOn);";
+            var orderSql = "INSERT INTO Orders (Id, UserId, PlacedOn, [Status], Version) VALUES (@Id, @UserId, @PlacedOn, @Status, @Version);";
             var orderItemSql = "INSERT INTO OrderItems(OrderId, Sku, Quantity, Price) VALUES (@OrderId, @Sku, @Quantity, @Price);";
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -55,7 +55,7 @@ namespace ReadModel.Repository.MsSql
                 using (var connection = new SqlConnection(Configuration[Repository.Configuration.OrderReadModelConnectionString]))
                 {
                     await connection.ExecuteAsync(deletesql, new {OrderId = order.Id}).ConfigureAwait(false);
-                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn})
+                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn, order.Status, order.Version})
                         .ConfigureAwait(false);
                     var products = order.Products.Select(p => new {p.Id.OrderId, p.Id.Sku, p.Quantity, p.Price});
                     await connection.ExecuteAsync(orderItemSql, products).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace ReadModel.Repository.MsSql
         {
             var sqlOrders = "SELECT * FROM Orders where UserId = @userId;";
             var sqlItems =
-                "SELECT OrderItems.* FROM OrderItems oi JOIN Orders o ON oi.OrderId = o.Id WHERE o.UserId = @userId;";
+                "SELECT oi.* FROM OrderItems oi JOIN Orders o ON oi.OrderId = o.Id WHERE o.UserId = @userId;";
 
             using (var connection = new SqlConnection(Configuration[Repository.Configuration.OrderReadModelConnectionString]))
             {
@@ -96,7 +96,7 @@ namespace ReadModel.Repository.MsSql
 
                 return orders.Select(o =>
                 {
-                    o.Products = items[o.Id].ToList();
+                    o.Products = items.ContainsKey(o.Id) ? items[o.Id].ToList() : new List<OrderItem>();
                     return o;
                 });
             }

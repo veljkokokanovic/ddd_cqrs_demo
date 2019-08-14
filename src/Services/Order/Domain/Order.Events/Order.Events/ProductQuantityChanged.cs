@@ -7,7 +7,14 @@ namespace Order.Events
 {
     public class ProductQuantityChanged : DomainEvent
     {
-        public string LineItemId { get; set; }
+        public ProductQuantityChanged(string sku, int from, int to)
+        {
+            Sku = sku;
+            From = from;
+            To = to;
+        }
+
+        public string Sku { get; set; }
 
         public int From { get; set; }
 

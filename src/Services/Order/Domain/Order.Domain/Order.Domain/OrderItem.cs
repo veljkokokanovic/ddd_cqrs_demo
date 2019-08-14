@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using domainD;
+﻿using domainD;
 using Order.Events;
+using System;
 
 namespace Order.Domain
 {
@@ -16,14 +14,22 @@ namespace Order.Domain
 
         internal decimal Price { get; set; }
 
-        public void ChangeQuantity(int quantity)
+        public void SetQuantity(int quantity)
         {
             if (quantity < 1)
             {
                 throw new ArgumentException("Quantity must be > 0", nameof(quantity));
             }
 
-            RaiseEvent(new ProductQuantityChanged{LineItemId = Identity, From = Quantity, To = quantity});
+            if (quantity != Quantity)
+            {
+                RaiseEvent(new ProductQuantityChanged(Identity, Quantity, quantity));
+            }
+        }
+
+        public void Remove()
+        {
+            RaiseEvent(new ProductRemoved(Identity));
         }
     }
 }

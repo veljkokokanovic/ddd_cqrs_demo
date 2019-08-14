@@ -26,6 +26,11 @@ namespace Order.CommandHandler
             services.AddMassTransit(config =>
             {
                 config.AddConsumer<AddProductToOrderConsumer>();
+                config.AddConsumer<CancelOrderConsumer>();
+                config.AddConsumer<CompleteOrderConsumer>();
+                config.AddConsumer<PlaceOrderConsumer>();
+                config.AddConsumer<RemoveProductConsumer>();
+                config.AddConsumer<SetProductQuantityConsumer>();
 
                 config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -36,6 +41,41 @@ namespace Order.CommandHandler
                         e.PrefetchCount = 16;
                         e.UseMessageRetry(x => x.Interval(2, 100));
                         e.ConfigureConsumer<AddProductToOrderConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(CancelOrder), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<CancelOrderConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(CompleteOrder), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<CompleteOrderConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(PlaceOrder), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<PlaceOrderConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(RemoveProduct), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<RemoveProductConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(SetProductQuantity), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<SetProductQuantityConsumer>(provider);
                         e.UseFilter(new OperationContextFilter());
                     });
                 }));

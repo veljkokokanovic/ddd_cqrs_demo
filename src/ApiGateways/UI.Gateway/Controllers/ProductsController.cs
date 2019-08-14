@@ -17,7 +17,6 @@ namespace UI.Gateway.Controllers
         {
         }
 
-        [HttpGet]
         public async Task<ActionResult> Get(string category)
         {
             var response = await GetAsync(HttpClients.ProductApi, $"products?category={category}");

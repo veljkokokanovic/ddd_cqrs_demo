@@ -7,11 +7,12 @@ namespace Product.Api.Models
 {
     public class ProductViewModel
     {
-        public ProductViewModel(string sku, string name, string category)
+        public ProductViewModel(string sku, string name, string category, decimal price)
         {
             Sku = sku;
             Name = name;
             Category = category;
+            Price = price;
         }
 
         public string Sku { get; set; }
@@ -19,5 +20,7 @@ namespace Product.Api.Models
         public string Name { get; set; }
 
         public string Category { get; set; }
+
+        public decimal Price { get; set; }
     }
 }

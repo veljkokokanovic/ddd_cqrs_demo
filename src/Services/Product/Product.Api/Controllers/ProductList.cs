@@ -12,16 +12,16 @@ namespace Product.Api.Controllers
         {
             get
             {
-                yield return new ProductViewModel("pz1", "Margarita", Categories.Pizza);
-                yield return new ProductViewModel("pz2", "Sizzler", Categories.Pizza);
-                yield return new ProductViewModel("pz3", "Texas BBQ", Categories.Pizza);
-                yield return new ProductViewModel("pz4", "Diavolo", Categories.Pizza);
-                yield return new ProductViewModel("pz5", "Napoli", Categories.Pizza);
-                yield return new ProductViewModel("pz6", "Hawaiian", Categories.Pizza);
-                yield return new ProductViewModel("dr1", "Coke", Categories.Drink);
-                yield return new ProductViewModel("dr2", "Pepsi", Categories.Drink);
-                yield return new ProductViewModel("dr3", "Fanta", Categories.Drink);
-                yield return new ProductViewModel("dr4", "7Up", Categories.Drink);
+                yield return new ProductViewModel("pz1", "Margarita", Categories.Pizza, 9.95M);
+                yield return new ProductViewModel("pz2", "Sizzler", Categories.Pizza, 9.95M);
+                yield return new ProductViewModel("pz3", "Texas BBQ", Categories.Pizza, 10.95M);
+                yield return new ProductViewModel("pz4", "Diavolo", Categories.Pizza, 10.95M);
+                yield return new ProductViewModel("pz5", "Napoli", Categories.Pizza, 9.95M);
+                yield return new ProductViewModel("pz6", "Hawaiian", Categories.Pizza, 9.95M);
+                yield return new ProductViewModel("dr1", "Coke", Categories.Drink, 1.15M);
+                yield return new ProductViewModel("dr2", "Pepsi", Categories.Drink, 1.05M);
+                yield return new ProductViewModel("dr3", "Fanta", Categories.Drink, 1.15M);
+                yield return new ProductViewModel("dr4", "7Up", Categories.Drink, 1.05M);
             }
         }
     }

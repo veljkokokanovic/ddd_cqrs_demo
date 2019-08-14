@@ -10,5 +10,7 @@ namespace ReadModel.Order
         public ICollection<OrderItem> Products { get; set; }
 
         public DateTime PlacedOn { get; set; }
+
+        public OrderStatus Status { get; set; }
     }
 }

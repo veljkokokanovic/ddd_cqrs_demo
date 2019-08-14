@@ -13,33 +13,6 @@ namespace NEventStore.EventSubscription
 {
     public static class HandleOrderEvent
     {
-        //public static Func<ProductAddedToOrder, IOrderRepository, IMapper, Task>
-        //    ProductAddedToOrder =
-        //        async (@event, repository, mapper) =>
-        //        {
-        //            var order = await repository.GetAsync(@event.AggregateRootId).ConfigureAwait(false);
-        //            if (order == null)
-        //            {
-        //                if (@event.Version == 0)
-        //                {
-        //                    // creation event
-        //                    var orderModel = mapper.Map<ReadModel.Order.Order>(@event);
-        //                    await repository.SaveAsync(orderModel).ConfigureAwait(false);
-        //                }
-        //                else
-        //                {
-        //                    throw new InvalidOperationException();
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (order.Version < @event.Version)
-        //                {
-        //                    order.Products.Add(mapper.Map<OrderItem>(@event));
-        //                }
-        //            }
-        //        };
-
         public static Func<ProductAddedToOrder, IOrderRepository, IMapper, IBus, Task>
             ProductAddedToOrder =
                 async (@event, repository, mapper, bus) =>
@@ -55,7 +28,7 @@ namespace NEventStore.EventSubscription
                 {
                     await OrderEvent.For(repository, @event, bus).Manage(o =>
                     {
-                        var lineItem = o.Products.FirstOrDefault(p => p.Id.Sku == @event.LineItemId);
+                        var lineItem = o.Products.FirstOrDefault(p => p.Id.Sku == @event.Sku);
                         if (lineItem != null)
                         {
                             lineItem.Quantity = @event.To;
@@ -89,16 +62,7 @@ namespace NEventStore.EventSubscription
             {
                 if (_event.Version == 0 && initialEventHandler != null)
                 {
-                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        order = initialEventHandler();
-                        await _repository.SaveAsync(order).ConfigureAwait(false);
-                        if (_bus != null)
-                        {
-                            await _bus.Publish(_event, _event.GetType()).ConfigureAwait(false);
-                        }
-                        transaction.Complete();
-                    }
+                    await SaveAndPublish(initialEventHandler);
                 }
                 else
                 {
@@ -109,17 +73,27 @@ namespace NEventStore.EventSubscription
             {
                 if (order.Version < _event.Version)
                 {
-                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                    await SaveAndPublish(() =>
                     {
                         eventHandler(order);
-                        await _repository.SaveAsync(order).ConfigureAwait(false);
-                        if (_bus != null)
-                        {
-                            await _bus.Publish(_event, _event.GetType()).ConfigureAwait(false);
-                        }
-                        transaction.Complete();
-                    }
+                        return order;
+                    });
                 }
+            }
+        }
+
+        private async Task SaveAndPublish(Func<ReadModel.Order.Order> updateOrderModel)
+        {
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var order = updateOrderModel();
+                order.Version = _event.Version;
+                await _repository.SaveAsync(order).ConfigureAwait(false);
+                if (_bus != null)
+                {
+                    await _bus.Publish(_event, _event.GetType()).ConfigureAwait(false);
+                }
+                transaction.Complete();
             }
         }
     }

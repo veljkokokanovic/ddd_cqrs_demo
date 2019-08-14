@@ -1,7 +1,7 @@
-﻿using domainD;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using domainD;
 
-namespace Order.Domain
+namespace SharedKernel
 {
     public class Address : ValueObject
     {

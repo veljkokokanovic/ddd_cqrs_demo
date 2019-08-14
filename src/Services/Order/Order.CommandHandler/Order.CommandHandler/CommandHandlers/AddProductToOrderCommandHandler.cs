@@ -2,13 +2,12 @@
 using Order.Commands;
 using Order.Events;
 using System.Threading.Tasks;
-using domainD.Repository;
 
 namespace Order.CommandHandler.CommandHandlers
 {
     public class AddProductToOrderCommandHandler : ICommandHandler<AddProductToOrder>
     {
-        private IRepository<Domain.Order> _repository;
+        private readonly IRepository<Domain.Order> _repository;
 
         public AddProductToOrderCommandHandler(IRepository<Domain.Order> repository)
         {
@@ -24,8 +23,7 @@ namespace Order.CommandHandler.CommandHandlers
             }
             else
             {
-                order = AggregateRoot.Create<Domain.Order>(new ProductAddedToOrder
-                        {Quantity = command.Quantity, Sku = command.Sku, UserId = OperationContext.UserId.Value},
+                order = AggregateRoot.Create<Domain.Order>(new ProductAddedToOrder(command.Sku, command.Quantity, command.Price, command.UserId),
                     command.OrderId);
             }
 

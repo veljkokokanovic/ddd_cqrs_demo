@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using domainD;
 
-namespace UI.Gateway.Models.Order.Commands
+namespace Order.Commands
 {
-    public class SetProductQuantity
+    public class SetProductQuantity : ICommand
     {
         public string Sku { get; set; }
 
         public int Quantity { get; set; }
+
+        public Guid OrderId { get; set; }
     }
 }
