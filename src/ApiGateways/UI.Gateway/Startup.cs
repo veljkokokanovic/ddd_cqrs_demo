@@ -14,6 +14,7 @@ using AutoMapper;
 using GreenPipes;
 using MassTransit.Extensions;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Converters;
 using Order.Commands;
 
 namespace UI.Gateway
@@ -33,9 +34,11 @@ namespace UI.Gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services
+                .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+                .AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.Converters.Add(new StringEnumConverter(true)))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2).Services
                 .AddHttpClient(HttpClients.ProductApi, client =>
                 {
                     client.BaseAddress = new Uri(Configuration[HttpClients.ProductApi]);
@@ -50,10 +53,9 @@ namespace UI.Gateway
                 {
                     client.BaseAddress = new Uri(Configuration[HttpClients.DeliveryApi]);
                     client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-                });
-
-            services.AddHttpContextAccessor();
-            services.AddMassTransit(ConfigureBus);
+                }).Services
+                .AddHttpContextAccessor()
+                .AddMassTransit(ConfigureBus);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

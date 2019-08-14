@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[OrderItems] (
     [OrderId]  UNIQUEIDENTIFIER NOT NULL,
     [Sku]      VARCHAR (50)     NOT NULL,
     [Quantity] INT              NOT NULL,
-    [Price]    DECIMAL (18, 2)  NULL
+    [Price]    DECIMAL (18, 2)  NOT NULL
 );
 
 

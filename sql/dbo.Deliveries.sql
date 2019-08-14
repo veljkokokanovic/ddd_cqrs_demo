@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[Deliveries] (
     [Id]          UNIQUEIDENTIFIER NOT NULL,
     [Address]     NVARCHAR (256)   NOT NULL,
     [PhoneNumber] VARCHAR (20)     NOT NULL,
-    [Status]      VARCHAR (12)     NOT NULL
+    [Status]      VARCHAR (20)     NOT NULL
 );
 
 

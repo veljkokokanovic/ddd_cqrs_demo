@@ -55,7 +55,7 @@ namespace ReadModel.Repository.MsSql
                 using (var connection = new SqlConnection(Configuration[Repository.Configuration.OrderReadModelConnectionString]))
                 {
                     await connection.ExecuteAsync(deletesql, new {OrderId = order.Id}).ConfigureAwait(false);
-                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn, order.Status, order.Version})
+                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn, Status = order.Status.ToString(), order.Version})
                         .ConfigureAwait(false);
                     var products = order.Products.Select(p => new {p.Id.OrderId, p.Id.Sku, p.Quantity, p.Price});
                     await connection.ExecuteAsync(orderItemSql, products).ConfigureAwait(false);
