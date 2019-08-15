@@ -7,23 +7,23 @@ using System.Transactions;
 
 namespace NEventStore.EventSubscription
 {
-    internal class DomainEventPersister<TEntity>
+    internal class DomainEventHandler<TEntity>
         where TEntity : ReadModel.Entity<Guid>
     {
         private readonly IReadModelRepository<TEntity, Guid> _repository;
         private readonly DomainEvent _event;
         private readonly IBus _bus;
 
-        private DomainEventPersister(IReadModelRepository<TEntity, Guid> repository, DomainEvent orderEvent, IBus bus)
+        private DomainEventHandler(IReadModelRepository<TEntity, Guid> repository, DomainEvent orderEvent, IBus bus)
         {
             _repository = repository;
             _event = orderEvent;
             _bus = bus;
         }
 
-        public static DomainEventPersister<TEntity> For(IReadModelRepository<TEntity, Guid> repository, DomainEvent @event, IBus bus = null)
+        public static DomainEventHandler<TEntity> For(IReadModelRepository<TEntity, Guid> repository, DomainEvent @event, IBus bus = null)
         {
-            return new DomainEventPersister<TEntity>(repository, @event, bus);
+            return new DomainEventHandler<TEntity>(repository, @event, bus);
         }
 
         public async Task Manage(Action<TEntity> eventHandler, Func<TEntity> initialEventHandler = null)

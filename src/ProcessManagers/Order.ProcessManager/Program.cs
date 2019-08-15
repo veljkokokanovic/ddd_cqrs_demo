@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Console.Host;
+using Microsoft.Extensions.Hosting;
 
 namespace Order.ProcessManager
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            await new HostBuilder()
+                .AddConfigFile()
+                .ConfigureServices(ServicesConfigurator.ConfigureBus)
+                .RunConsoleAsync();
         }
     }
 }

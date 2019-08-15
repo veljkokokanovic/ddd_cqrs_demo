@@ -15,7 +15,7 @@ namespace NEventStore.EventSubscription
             ProductAddedToOrder =
                 async (@event, repository, mapper, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus)
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus)
                         .Manage(
                             order => order.Products.Add(mapper.Map<OrderItem>(@event)),
                             () => mapper.Map<ReadModel.Order.Order>(@event));
@@ -25,7 +25,7 @@ namespace NEventStore.EventSubscription
             ProductQuantityChanged =
                 async (@event, repository, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus)
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus)
                         .Manage(o =>
                         {
                             var product = o.Products.FirstOrDefault(p => p.Id.Sku == @event.Sku);
@@ -40,7 +40,7 @@ namespace NEventStore.EventSubscription
             OrderCancelled =
                 async (@event, repository, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
                         {
                             o.Status = OrderStatus.Cancelled;
                         });
@@ -50,7 +50,7 @@ namespace NEventStore.EventSubscription
             OrderCompleted =
                 async (@event, repository, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
                     {
                         o.Status = OrderStatus.Completed;
                     });
@@ -60,7 +60,7 @@ namespace NEventStore.EventSubscription
             OrderPlaced =
                 async (@event, repository, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
                     {
                         o.Status = OrderStatus.Placed;
                     });
@@ -70,7 +70,7 @@ namespace NEventStore.EventSubscription
             ProductRemoved =
                 async (@event, repository, bus) =>
                 {
-                    await DomainEventPersister<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
+                    await DomainEventHandler<ReadModel.Order.Order>.For(repository, @event, bus).Manage(o =>
                     {
                         var product = o.Products.FirstOrDefault(p => p.Id.Sku == @event.Sku);
                         if (product != null)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,8 +6,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit.Automatonymous" Version="5.5.4" />
+    <PackageReference Include="MassTransit.Automatonymous.Extensions.DependencyInjection" Version="5.5.4" />
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="5.5.4" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="5.5.4" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\Delivery\Domain\Delivery.Events\Delivery.Events\Delivery.Events.csproj" />
+    <ProjectReference Include="..\..\Services\Order\Domain\Order.Events\Order.Events\Order.Events.csproj" />
+    <ProjectReference Include="..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
