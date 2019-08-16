@@ -16,7 +16,10 @@ namespace Console.Host.Filters
                 OperationContext.CorrelationId = correlationGuid;
             }
 
-            OperationContext.UserId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            if (context.Headers.TryGetHeader(KnownHeaders.UserId, out var userId) && Guid.TryParse(userId.ToString(), out var userIdGuid))
+            {
+                OperationContext.UserId = userIdGuid;
+            }
 
             return next.Send(context);
         }

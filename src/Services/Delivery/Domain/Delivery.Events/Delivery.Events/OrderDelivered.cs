@@ -7,11 +7,14 @@ namespace Delivery.Events
 {
     public class OrderDelivered : DomainEvent
     {
-        public OrderDelivered(Guid userId)
+        public OrderDelivered(Guid userId, Guid referenceOrderId)
         {
             UserId = userId;
+            ReferenceOrderId = referenceOrderId;
         }
 
         public Guid UserId { get; set; }
+
+        public Guid ReferenceOrderId { get; set; }
     }
 }

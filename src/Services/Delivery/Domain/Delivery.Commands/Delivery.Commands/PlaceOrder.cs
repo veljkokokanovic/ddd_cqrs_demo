@@ -5,7 +5,7 @@ namespace Delivery.Commands
 {
     public class PlaceOrder : ICommand
     {
-        public Guid OrderId { get; set; }
+        public Guid ReferenceOrderId { get; set; }
 
         public Guid UserId { get; set; }
 

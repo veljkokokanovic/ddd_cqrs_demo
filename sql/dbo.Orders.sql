@@ -13,6 +13,7 @@ CREATE TABLE [dbo].[Orders] (
     [UserId]   UNIQUEIDENTIFIER NOT NULL,
     [PlacedOn] DATETIME2 (7)    NOT NULL,
 	[Status]	VARCHAR(20)		NOT NULL,
+	[Comment]	NVARCHAR(128)	NULL,
     [Version]  BIGINT           NOT NULL
 );
 

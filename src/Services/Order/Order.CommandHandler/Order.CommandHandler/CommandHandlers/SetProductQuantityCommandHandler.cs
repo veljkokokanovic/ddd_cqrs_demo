@@ -1,6 +1,6 @@
 ﻿using domainD;
 using Order.Commands;
-using Order.Events;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Order.CommandHandler.CommandHandlers
@@ -8,10 +8,12 @@ namespace Order.CommandHandler.CommandHandlers
     public class SetProductQuantityCommandHandler : ICommandHandler<SetProductQuantity>
     {
         private readonly IRepository<Domain.Order> _repository;
+        private readonly ILogger _logger;
 
-        public SetProductQuantityCommandHandler(IRepository<Domain.Order> repository)
+        public SetProductQuantityCommandHandler(IRepository<Domain.Order> repository, ILogger<SetProductQuantityCommandHandler> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task HandleAsync(SetProductQuantity command)
@@ -22,6 +24,7 @@ namespace Order.CommandHandler.CommandHandlers
                 item.SetQuantity(command.Quantity);
                 await _repository.SaveAsync(order).ConfigureAwait(false);
             }
+            _logger.LogInformation("Command {command} for order {orderId} succesfully processed", command.GetType(), command.OrderId);
         }
     }
 }

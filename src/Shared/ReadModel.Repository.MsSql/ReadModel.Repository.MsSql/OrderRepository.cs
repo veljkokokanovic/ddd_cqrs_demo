@@ -47,7 +47,7 @@ namespace ReadModel.Repository.MsSql
         public override async Task SaveAsync(Order.Order order)
         {
             var deletesql = "DELETE FROM OrderItems WHERE OrderId = @OrderId; DELETE FROM Orders WHERE Id = @OrderId;";
-            var orderSql = "INSERT INTO Orders (Id, UserId, PlacedOn, [Status], Version) VALUES (@Id, @UserId, @PlacedOn, @Status, @Version);";
+            var orderSql = "INSERT INTO Orders (Id, UserId, PlacedOn, [Status], Comment, Version) VALUES (@Id, @UserId, @PlacedOn, @Status, @Comment, @Version);";
             var orderItemSql = "INSERT INTO OrderItems(OrderId, Sku, Quantity, Price) VALUES (@OrderId, @Sku, @Quantity, @Price);";
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -55,7 +55,7 @@ namespace ReadModel.Repository.MsSql
                 using (var connection = new SqlConnection(Configuration[Repository.Configuration.OrderReadModelConnectionString]))
                 {
                     await connection.ExecuteAsync(deletesql, new {OrderId = order.Id}).ConfigureAwait(false);
-                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn, Status = order.Status.ToString(), order.Version})
+                    await connection. ExecuteAsync(orderSql, new {order.Id, order.UserId, order.PlacedOn, Status = order.Status.ToString(), order.Comment, order.Version})
                         .ConfigureAwait(false);
                     var products = order.Products.Select(p => new {p.Id.OrderId, p.Id.Sku, p.Quantity, p.Price});
                     await connection.ExecuteAsync(orderItemSql, products).ConfigureAwait(false);

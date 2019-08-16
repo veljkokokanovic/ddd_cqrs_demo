@@ -2,7 +2,7 @@
 using System.Linq;
 using domainD;
 using Order.Commands;
-using Order.Events;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using SharedKernel;
 
@@ -11,10 +11,12 @@ namespace Order.CommandHandler.CommandHandlers
     public class PlaceOrderCommandHandler : ICommandHandler<PlaceOrder>
     {
         private readonly IRepository<Domain.Order> _repository;
+        private readonly ILogger _logger;
 
-        public PlaceOrderCommandHandler(IRepository<Domain.Order> repository)
+        public PlaceOrderCommandHandler(IRepository<Domain.Order> repository, ILogger<PlaceOrderCommandHandler> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task HandleAsync(PlaceOrder command)
@@ -25,6 +27,7 @@ namespace Order.CommandHandler.CommandHandlers
             var delivery = new Delivery(address, command.DeliveryDate, command.PhoneNumber);
             order.Place(delivery);
             await _repository.SaveAsync(order).ConfigureAwait(false);
+            _logger.LogInformation("Command {command} for order {orderId} succesfully processed", command.GetType(), command.OrderId);
         }
     }
 }

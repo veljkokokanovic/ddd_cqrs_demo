@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,10 +12,13 @@
     <PackageReference Include="MassTransit.EntityFrameworkCore" Version="5.5.4" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="5.5.4" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Services\Delivery\Domain\Delivery.Commands\Delivery.Commands\Delivery.Commands.csproj" />
     <ProjectReference Include="..\..\Services\Delivery\Domain\Delivery.Events\Delivery.Events\Delivery.Events.csproj" />
+    <ProjectReference Include="..\..\Services\Order\Domain\Order.Commands\Order.Commands\Order.Commands.csproj" />
     <ProjectReference Include="..\..\Services\Order\Domain\Order.Events\Order.Events\Order.Events.csproj" />
     <ProjectReference Include="..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
   </ItemGroup>

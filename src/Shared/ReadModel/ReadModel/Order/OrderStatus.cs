@@ -9,6 +9,7 @@ namespace ReadModel.Order
         Pending,
         Placed,
         Cancelled,
-        Completed
+        Completed,
+        Failed
     }
 }

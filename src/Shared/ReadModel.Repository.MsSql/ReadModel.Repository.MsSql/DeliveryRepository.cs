@@ -23,8 +23,8 @@ namespace ReadModel.Repository.MsSql
             using (var connection = new SqlConnection(Configuration[Repository.Configuration.DeliveryReadModelConnectionString]))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
-                var order = await connection.QuerySingleAsync(sql, id);
-                return DynamicToOrder(order);
+                var order = await connection.QuerySingleOrDefaultAsync(sql, new { id }).ConfigureAwait(false);
+                return order != null ? DynamicToOrder(order) : null;
             }
         }
 
@@ -45,13 +45,13 @@ namespace ReadModel.Repository.MsSql
                 using (var connection = new SqlConnection(Configuration[Repository.Configuration.DeliveryReadModelConnectionString]))
                 {
                     await connection.ExecuteAsync(deletesql, new {id = order.Id}).ConfigureAwait(false);
-                    await connection. ExecuteAsync(
+                    await connection.ExecuteAsync(
                             orderSql, 
                             new
                             {
                                 order.Id,
                                 OrderId = order.ReferenceOrderId,
-                                AddresLine1 = order.DeliveryAddress.Line1,
+                                AddressLine1 = order.DeliveryAddress.Line1,
                                 AddressLine2 = order.DeliveryAddress.Line2,
                                 order.DeliveryAddress.PostCode,
                                 order.PhoneNumber,

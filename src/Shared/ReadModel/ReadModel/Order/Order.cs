@@ -12,5 +12,7 @@ namespace ReadModel.Order
         public DateTime PlacedOn { get; set; }
 
         public OrderStatus Status { get; set; }
+
+        public string Comment { get; set; }
     }
 }

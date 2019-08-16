@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MassTransit.EntityFrameworkCoreIntegration;
+﻿using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 
-namespace Order.ProcessManager.Sagas.Order
+namespace Order.ProcessManager.Sagas.Persistence
 {
     public class OrderSagaDbContext : SagaDbContext<SagaInstance, SagaInstanceMap>
     {

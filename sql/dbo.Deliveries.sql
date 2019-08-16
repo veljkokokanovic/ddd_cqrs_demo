@@ -1,4 +1,4 @@
-USE [DeliveryRead]
+USE [DeliveriesRead]
 GO
 
 /****** Object: Table [dbo].[Deliveries] Script Date: 14/08/2019 11:46:39 ******/

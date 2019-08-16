@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
     <ProjectReference Include="..\..\..\..\Shared\MassTransit.Extensions\MassTransit.Extensions.csproj" />
     <ProjectReference Include="..\..\..\..\Shared\ReadModel.Repository.MsSql\ReadModel.Repository.MsSql\ReadModel.Repository.MsSql.csproj" />
+    <ProjectReference Include="..\..\..\Delivery\Domain\Delivery.Events\Delivery.Events\Delivery.Events.csproj" />
     <ProjectReference Include="..\..\..\Order\Domain\Order.Events\Order.Events\Order.Events.csproj" />
   </ItemGroup>
 

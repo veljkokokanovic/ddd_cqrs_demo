@@ -31,6 +31,7 @@ namespace Order.CommandHandler
                 config.AddConsumer<PlaceOrderConsumer>();
                 config.AddConsumer<RemoveProductConsumer>();
                 config.AddConsumer<SetProductQuantityConsumer>();
+                config.AddConsumer<FailOrderConsumer>();
 
                 config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -76,6 +77,13 @@ namespace Order.CommandHandler
                         e.PrefetchCount = 16;
                         e.UseMessageRetry(x => x.Interval(2, 100));
                         e.ConfigureConsumer<SetProductQuantityConsumer>(provider);
+                        e.UseFilter(new OperationContextFilter());
+                    });
+                    cfg.ReceiveEndpoint(host, nameof(FailOrder), e =>
+                    {
+                        e.PrefetchCount = 16;
+                        e.UseMessageRetry(x => x.Interval(2, 100));
+                        e.ConfigureConsumer<FailOrderConsumer>(provider);
                         e.UseFilter(new OperationContextFilter());
                     });
                 }));

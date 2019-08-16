@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Automatonymous;
 
-namespace Order.ProcessManager.Sagas.Order
+namespace Order.ProcessManager.Sagas.Persistence
 {
     public class SagaInstance : SagaStateMachineInstance
     {

@@ -79,8 +79,26 @@ namespace Order.Domain
             }
         }
 
+        public void Fail(string reason)
+        {
+            if (!IsPlaced || IsCancelled)
+            {
+                throw new InvalidOperationException($"Order can not be completed. It is not placed or cancelled.");
+            }
+
+            if (!IsComplete)
+            {
+                RaiseEvent(new OrderCompleted(success: false, comment: reason));
+            }
+        }
+
         public void Cancel()
         {
+            if(IsPlaced)
+            {
+                throw new InvalidOperationException($"Order can not be cancelled. It is placed.");
+            }
+
             if (IsComplete)
             {
                 throw new InvalidOperationException($"Order can not be cancelled. It is completed.");

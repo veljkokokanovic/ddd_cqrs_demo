@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace Order.ProcessManager.Sagas.Order
+namespace Order.ProcessManager.Sagas.Persistence
 {
     public class SagaInstanceMap : IEntityTypeConfiguration<SagaInstance>
     {

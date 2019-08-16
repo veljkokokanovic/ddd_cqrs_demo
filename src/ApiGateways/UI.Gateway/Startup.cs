@@ -79,7 +79,7 @@ namespace UI.Gateway
                 var host = cfg.ConfigureHost(busConfig);
                 cfg.ConfigureSend(sendPipe =>
                 {
-                    sendPipe.UseSendFilter(new CorrelationIdEstablisher(provider));
+                    sendPipe.UseSendFilter(new OperationContextEstablisher(provider));
                 });
 
                 EndpointConvention.Map<AddProductToOrder>(new Uri(new Uri(busConfig["Host"]), nameof(AddProductToOrder)));
@@ -95,11 +95,11 @@ namespace UI.Gateway
         }
     }
 
-    public class CorrelationIdEstablisher : IFilter<SendContext>
+    public class OperationContextEstablisher : IFilter<SendContext>
     {
         private IServiceProvider _serviceProvider;
 
-        public CorrelationIdEstablisher(IServiceProvider serviceProvider)
+        public OperationContextEstablisher(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
@@ -112,12 +112,14 @@ namespace UI.Gateway
                 context.Headers.Set(MassTransit.Extensions.KnownHeaders.CorrelationId, httpContext.Response.Headers[KnownHeaders.CorrelationId].FirstOrDefault());
             }
 
+            context.Headers.Set(MassTransit.Extensions.KnownHeaders.UserId, "11111111-1111-1111-1111-111111111111");
+
             return next.Send(context);
         }
 
         public void Probe(ProbeContext context)
         {
-            context.CreateFilterScope(nameof(CorrelationIdEstablisher));
+            context.CreateFilterScope(nameof(OperationContextEstablisher));
         }
     }
 }

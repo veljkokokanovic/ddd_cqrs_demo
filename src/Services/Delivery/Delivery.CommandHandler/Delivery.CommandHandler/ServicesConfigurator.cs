@@ -55,7 +55,7 @@ namespace Delivery.CommandHandler
                         e.ConfigureConsumer<DeliverOrderConsumer>(provider);
                         e.UseFilter(new OperationContextFilter());
                     });
-                    cfg.ReceiveEndpoint(host, nameof(PlaceOrder), e =>
+                    cfg.ReceiveEndpoint(host, "CreateDelivery", e =>
                     {
                         e.PrefetchCount = 16;
                         e.UseMessageRetry(x => x.Interval(2, 100));

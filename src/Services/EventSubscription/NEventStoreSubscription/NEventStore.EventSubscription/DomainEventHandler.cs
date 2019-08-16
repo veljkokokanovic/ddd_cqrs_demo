@@ -1,5 +1,7 @@
 ﻿using domainD;
 using MassTransit;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ReadModel.Repository;
 using System;
 using System.Threading.Tasks;
@@ -13,20 +15,22 @@ namespace NEventStore.EventSubscription
         private readonly IReadModelRepository<TEntity, Guid> _repository;
         private readonly DomainEvent _event;
         private readonly IBus _bus;
+        private readonly ILogger _logger;
 
-        private DomainEventHandler(IReadModelRepository<TEntity, Guid> repository, DomainEvent orderEvent, IBus bus)
+        private DomainEventHandler(IReadModelRepository<TEntity, Guid> repository, DomainEvent orderEvent, IBus bus, ILogger<DomainEventHandler<TEntity>> logger)
         {
             _repository = repository;
             _event = orderEvent;
             _bus = bus;
+            _logger = logger ?? NullLogger<DomainEventHandler<TEntity>>.Instance;
         }
 
-        public static DomainEventHandler<TEntity> For(IReadModelRepository<TEntity, Guid> repository, DomainEvent @event, IBus bus = null)
+        public static DomainEventHandler<TEntity> For(IReadModelRepository<TEntity, Guid> repository, DomainEvent @event, IBus bus = null, ILogger<DomainEventHandler<TEntity>> logger = null)
         {
-            return new DomainEventHandler<TEntity>(repository, @event, bus);
+            return new DomainEventHandler<TEntity>(repository, @event, bus, logger);
         }
 
-        public async Task Manage(Action<TEntity> eventHandler, Func<TEntity> initialEventHandler = null)
+        public async Task Manage(Action<TEntity> eventHandler = null, Func<TEntity> initialEventHandler = null)
         {
             var entiy = await _repository.GetAsync(_event.AggregateRootId).ConfigureAwait(false);
             if (entiy == null)
@@ -60,9 +64,11 @@ namespace NEventStore.EventSubscription
                 var entity = updateModel();
                 entity.Version = _event.Version;
                 await _repository.SaveAsync(entity).ConfigureAwait(false);
+                _logger.LogInformation("Event {event} for order {order} succesfully projected to read store.", _event.GetType(), _event.AggregateRootId);
                 if (_bus != null)
                 {
                     await _bus.Publish(_event, _event.GetType()).ConfigureAwait(false);
+                    _logger.LogInformation("Event {event} for order {order} succesfully published.", _event.GetType(), _event.AggregateRootId);
                 }
                 transaction.Complete();
             }

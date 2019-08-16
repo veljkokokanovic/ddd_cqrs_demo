@@ -12,6 +12,8 @@ namespace Delivery.Domain
 
         private Guid UserId { get; set; }
 
+        private Guid ReferenceOrderId { get; set; }
+
         private bool IsComplete { get; set; }
 
         private bool HasDeliveryStarted { get; set; }
@@ -25,7 +27,7 @@ namespace Delivery.Domain
 
             if (!HasDeliveryStarted)
             {
-                RaiseEvent(new DeliveryStarted(UserId));
+                RaiseEvent(new DeliveryStarted(UserId, ReferenceOrderId));
             }
         }
 
@@ -38,13 +40,13 @@ namespace Delivery.Domain
 
             if (!IsComplete)
             {
-                RaiseEvent(new OrderDelivered(UserId));
+                RaiseEvent(new OrderDelivered(UserId, ReferenceOrderId));
             }
         }
 
         public void Return(string reason)
         {
-            if (String.IsNullOrEmpty(reason))
+            if (string.IsNullOrEmpty(reason))
             {
                 throw new ArgumentNullException(nameof(reason));
             }
@@ -56,13 +58,14 @@ namespace Delivery.Domain
 
             if (!IsComplete)
             {
-                RaiseEvent(new OrderReturned(UserId, reason));
+                RaiseEvent(new OrderReturned(UserId, reason, ReferenceOrderId));
             }
         }
 
         private void Handle(OrderPlaced @event)
         {
             UserId = @event.UserId;
+            ReferenceOrderId = @event.ReferenceOrderId;
         }
 
         private void Handle(OrderDelivered @event)

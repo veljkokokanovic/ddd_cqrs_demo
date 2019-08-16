@@ -1,17 +1,15 @@
-﻿using System;
-using System.Data.SqlClient;
-using AutoMapper;
+﻿using AutoMapper;
 using Console.Host;
 using domainD.Repository.NEventStore;
 using MassTransit;
 using MassTransit.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NEventStore.Persistence.Sql;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
 using ReadModel.Repository.MsSql;
+using System.Data.SqlClient;
 
 namespace NEventStore.EventSubscription
 {
@@ -44,10 +42,10 @@ namespace NEventStore.EventSubscription
 
         public static void ConfigureEventSubscriptionServices(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddLogging(cfg => cfg.AddConsole(options => options.DisableColors = false));
             services.AddAutoMapper(cfg => { cfg.AddProfile<ModelMappingProfile>(); },
                 typeof(ServicesConfigurator).Assembly);
             services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IDeliveryRepository, DeliveryRepository>();
         }
     }
 }

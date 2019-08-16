@@ -1,6 +1,6 @@
 ﻿using domainD;
 using Order.Commands;
-using Order.Events;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Order.CommandHandler.CommandHandlers
@@ -8,10 +8,12 @@ namespace Order.CommandHandler.CommandHandlers
     public class RemoveProductCommandHandler : ICommandHandler<RemoveProduct>
     {
         private readonly IRepository<Domain.Order> _repository;
+        private readonly ILogger _logger;
 
-        public RemoveProductCommandHandler(IRepository<Domain.Order> repository)
+        public RemoveProductCommandHandler(IRepository<Domain.Order> repository, ILogger<RemoveProductCommandHandler> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task HandleAsync(RemoveProduct command)
@@ -22,6 +24,7 @@ namespace Order.CommandHandler.CommandHandlers
                 item.Remove();
                 await _repository.SaveAsync(order).ConfigureAwait(false);
             }
+            _logger.LogInformation("Command {command} for order {orderId} succesfully processed", command.GetType(), command.OrderId);
         }
     }
 }
