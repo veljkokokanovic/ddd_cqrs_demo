@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ReadModel.Repository
@@ -9,12 +8,12 @@ namespace ReadModel.Repository
     {
         Task<TEntity> GetAsync(TId id);
 
-        Task<IQueryable<TEntity>> GetAsync(params TId[] id);
+        Task<IEnumerable<TEntity>> GetAsync(params TId[] id);
 
         Task SaveAsync(TEntity entity);
 
         Task DeleteAsync(TId id);
 
-        Task<IQueryable<TEntity>> FindAsync(Func<TEntity, bool> predicate);
+        Task<IEnumerable<TEntity>> GetAllAsync();
     }
 }

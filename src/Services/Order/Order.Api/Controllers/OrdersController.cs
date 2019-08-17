@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ReadModel.Order;
 using ReadModel.Repository.MsSql;
 
 namespace Order.Api.Controllers
@@ -30,9 +31,9 @@ namespace Order.Api.Controllers
             return Ok(order);
         }
 
-        public async Task<ActionResult> GetUserOrdersAsync([FromQuery] Guid userId)
+        public async Task<ActionResult> GetUserOrdersAsync([FromQuery] Guid userId, [FromQuery] OrderStatus? status = null)
         {
-            var order = await _orderRepository.GetUserOrdersAsync(userId);
+            var order = await _orderRepository.GetUserOrdersAsync(userId, status);
             return Ok(order);
         }
     }

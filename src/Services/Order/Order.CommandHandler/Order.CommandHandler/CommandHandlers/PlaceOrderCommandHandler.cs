@@ -22,9 +22,7 @@ namespace Order.CommandHandler.CommandHandlers
         public async Task HandleAsync(PlaceOrder command)
         {
             var order = await _repository.GetAsync(command.OrderId).ConfigureAwait(false);
-            var addressParts = command.Address.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
-            var address = new Address(addressParts.ElementAt(0), addressParts.ElementAt(1), addressParts.ElementAt(2));
-            var delivery = new Delivery(address, command.DeliveryDate, command.PhoneNumber);
+            var delivery = new Delivery(command.Address.ToAddress(), command.DeliveryDate, command.PhoneNumber);
             order.Place(delivery);
             await _repository.SaveAsync(order).ConfigureAwait(false);
             _logger.LogInformation("Command {command} for order {orderId} succesfully processed", command.GetType(), command.OrderId);

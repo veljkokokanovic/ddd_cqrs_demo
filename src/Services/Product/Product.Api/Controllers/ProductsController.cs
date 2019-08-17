@@ -16,7 +16,7 @@ namespace Product.Api.Controllers
         [HttpGet]
         public ActionResult Get(string category)
         {
-            return Ok(ProductList.All.Where(p => string.Equals(p.Category, category, StringComparison.InvariantCultureIgnoreCase)));
+            return Ok(ProductList.All.Where(p => !string.IsNullOrEmpty(category) && string.Equals(p.Category, category, StringComparison.InvariantCultureIgnoreCase) || string.IsNullOrEmpty(category)));
         }
     }
 }

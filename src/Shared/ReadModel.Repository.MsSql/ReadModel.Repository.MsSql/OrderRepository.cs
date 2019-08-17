@@ -39,11 +39,6 @@ namespace ReadModel.Repository.MsSql
             }
         }
 
-        public override async Task<IQueryable<Order.Order>> GetAsync(params Guid[] id)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task SaveAsync(Order.Order order)
         {
             var deletesql = "DELETE FROM OrderItems WHERE OrderId = @OrderId; DELETE FROM Orders WHERE Id = @OrderId;";
@@ -69,16 +64,11 @@ namespace ReadModel.Repository.MsSql
             throw new NotImplementedException();
         }
 
-        public override async Task<IQueryable<Order.Order>> FindAsync(Func<Order.Order, bool> predicate)
+        public async Task<IEnumerable<Order.Order>> GetUserOrdersAsync(Guid userId, OrderStatus? status = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Order.Order>> GetUserOrdersAsync(Guid userId)
-        {
-            var sqlOrders = "SELECT * FROM Orders where UserId = @userId;";
+            var sqlOrders = "SELECT * FROM Orders where UserId = @userId " + (status.HasValue ? $"AND [Status] = '{status.ToString()}'" : "");
             var sqlItems =
-                "SELECT oi.* FROM OrderItems oi JOIN Orders o ON oi.OrderId = o.Id WHERE o.UserId = @userId;";
+                "SELECT oi.* FROM OrderItems oi JOIN Orders o ON oi.OrderId = o.Id WHERE o.UserId = @userId " + (status.HasValue ? $"AND o.[Status] = '{status.ToString()}'" : "");
 
             using (var connection = new SqlConnection(Configuration[Repository.Configuration.OrderReadModelConnectionString]))
             {
@@ -100,6 +90,16 @@ namespace ReadModel.Repository.MsSql
                     return o;
                 });
             }
+        }
+
+        public override Task<IEnumerable<Order.Order>> GetAsync(params Guid[] id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IEnumerable<Order.Order>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

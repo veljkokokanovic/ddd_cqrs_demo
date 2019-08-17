@@ -28,11 +28,6 @@ namespace ReadModel.Repository.MsSql
             }
         }
 
-        public override async Task<IQueryable<Delivery.Order>> GetAsync(params Guid[] id)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task SaveAsync(Delivery.Order order)
         {
             var deletesql = "DELETE FROM Deliveries WHERE Id = @id;";
@@ -74,18 +69,34 @@ namespace ReadModel.Repository.MsSql
             throw new NotImplementedException();
         }
 
-        public override async Task<IQueryable<Delivery.Order>> FindAsync(Func<Delivery.Order, bool> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<Delivery.Order>> GetFromOrderIdsAsync(params Guid[] orderIds)
         {
+            if(orderIds == null)
+            {
+                throw new ArgumentNullException(nameof(orderIds));
+            }
+
             var sql = "SELECT * FROM Deliveries where OrderId IN @ids";
             using (var connection = new SqlConnection(Configuration[Repository.Configuration.DeliveryReadModelConnectionString]))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
                 var orders = await connection.QueryAsync(sql, new {ids = orderIds});
+                return new List<Delivery.Order>(orders.Select(DynamicToOrder));
+            }
+        }
+
+        public override Task<IEnumerable<Delivery.Order>> GetAsync(params Guid[] id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override async Task<IEnumerable<Delivery.Order>> GetAllAsync()
+        {
+            var sql = "SELECT * FROM Deliveries ORDER BY DeliveryDate";
+            using (var connection = new SqlConnection(Configuration[Repository.Configuration.DeliveryReadModelConnectionString]))
+            {
+                await connection.OpenAsync().ConfigureAwait(false);
+                var orders = await connection.QueryAsync(sql);
                 return new List<Delivery.Order>(orders.Select(DynamicToOrder));
             }
         }
@@ -105,7 +116,7 @@ namespace ReadModel.Repository.MsSql
                 Version = order.Version,
                 PhoneNumber = order.PhoneNumber,
                 DeliveryDate = order.DeliveryDate,
-                Status = order.Status,
+                Status = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), order.Status),
                 PlacedOn = order.PlacedOn,
                 DeliveredAt = order.DeliveredAt,
                 DeliveryStartedAt = order.StartedAt,

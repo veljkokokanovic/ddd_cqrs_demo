@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace ReadModel.Repository.MsSql
 {
@@ -17,9 +14,9 @@ namespace ReadModel.Repository.MsSql
         protected IConfiguration Configuration { get; private set; }
 
         public abstract Task<TEntity> GetAsync(TId id);
-        public abstract Task<IQueryable<TEntity>> GetAsync(params TId[] id);
         public abstract Task SaveAsync(TEntity entity);
         public abstract Task DeleteAsync(TId id);
-        public abstract Task<IQueryable<TEntity>> FindAsync(Func<TEntity, bool> predicate);
+        public abstract Task<IEnumerable<TEntity>> GetAsync(params TId[] id);
+        public abstract Task<IEnumerable<TEntity>> GetAllAsync();
     }
 }

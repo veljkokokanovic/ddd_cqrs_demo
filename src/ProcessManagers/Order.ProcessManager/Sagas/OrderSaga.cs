@@ -4,7 +4,7 @@ using Automatonymous.Binders;
 using Delivery.Events;
 using Microsoft.Extensions.Logging;
 using Order.ProcessManager.Sagas.Persistence;
-using System;
+using SharedKernel;
 using System.Threading.Tasks;
 using OrderPlaced = Order.Events.OrderPlaced;
 
@@ -64,7 +64,7 @@ namespace Order.ProcessManager.Sagas
                 UserId = context.Data.UserId,
                 DeliveryDate = context.Data.DeliveryInfo.DeliveryDate,
                 PhoneNumber = context.Data.DeliveryInfo.PhoneNumber,
-                Address = string.Join(Environment.NewLine, context.Data.DeliveryInfo.DeliveryAddress.Line1, context.Data.DeliveryInfo.DeliveryAddress.Line2, context.Data.DeliveryInfo.DeliveryAddress.PostCode)
+                Address = context.Data.DeliveryInfo.DeliveryAddress.Stringify()
             });
 
             _logger.LogInformation("Sending {command} for {order}", nameof(Commands.PlaceOrder), context.Data.AggregateRootId);

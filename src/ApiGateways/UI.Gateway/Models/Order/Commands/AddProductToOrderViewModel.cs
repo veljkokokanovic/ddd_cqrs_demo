@@ -14,7 +14,5 @@ namespace UI.Gateway.Models.Order.Commands
         public Guid UserId { get; set; }
 
         public Guid OrderId { get; set; }
-
-        public decimal Price { get; set; }
     }
 }

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 
 namespace UI.Gateway.Controllers
@@ -14,9 +13,10 @@ namespace UI.Gateway.Controllers
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public QueryControllerBase(IHttpClientFactory clientFactory)
+        public QueryControllerBase(IHttpClientFactory clientFactory, IMapper mapper)
         {
             _clientFactory = clientFactory;
+            ModelMapper = mapper;
         }
 
         protected async Task<HttpResponseMessage> GetAsync(string clientName, string endpoint)
@@ -24,21 +24,31 @@ namespace UI.Gateway.Controllers
             var client = _clientFactory.CreateClient(clientName);
             return await client.GetAsync(endpoint);
         }
+
+        protected IMapper ModelMapper { get; private set; }
     }
+
+    
 
     internal static class HttpExtensions
     {
-        public static async Task<ActionResult> ResultAsync<T>(this HttpResponseMessage message)
+        public static async Task<ActionResult> AsResultAsync<T>(this HttpResponseMessage message)
         {
             if (message.IsSuccessStatusCode)
             {
-                var jsonContent = await message.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<T>(jsonContent,
-                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var result = await message.ResultAsync<T>();
                 return new ObjectResult(result);
             }
 
             return new StatusCodeResult((int)message.StatusCode);
+        }
+
+        public static async Task<T> ResultAsync<T>(this HttpResponseMessage message)
+        {
+            var jsonContent = await message.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<T>(jsonContent,
+                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            return result;
         }
     }
 }
