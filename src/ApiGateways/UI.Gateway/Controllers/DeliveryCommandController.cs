@@ -1,41 +1,37 @@
 ﻿using AutoMapper;
+using Delivery.Commands;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Threading.Tasks;
 using UI.Gateway.Attributes;
 using UI.Gateway.Models.Delivery.Commands;
 
 namespace UI.Gateway.Controllers
 {
-    [ApiController]
     [CommandRoute("api/deliveries")]
-    [EstablishCommandContext]
-    public class DeliveryCommandController : Controller
+    public class DeliveryCommandController : CommandControllerBase
     {
-        private readonly IBus _bus;
-        private readonly IMapper _mapper;
-
-        public DeliveryCommandController(IBus bus, IMapper mapper)
+        public DeliveryCommandController(IHttpClientFactory clientFactory, IBus bus, IMapper mapper) 
+            : base(clientFactory, bus, mapper)
         {
-            _bus = bus;
-            _mapper = mapper;
         }
 
         public async Task<ActionResult> Post(StartDeliveryViewModel model)
         {
-            await _bus.Send(_mapper.Map<Delivery.Commands.StartDelivery>(model));
+            await SendCommandAsync<StartDelivery>(model);
             return Accepted();
         }
 
         public async Task<ActionResult> Post(ReturnOrderViewModel model)
         {
-            await _bus.Send(_mapper.Map<Delivery.Commands.ReturnOrder>(model));
+            await SendCommandAsync<ReturnOrder>(model);
             return Accepted();
         }
 
         public async Task<ActionResult> Post(DeliverOrderViewModel model)
         {
-            await _bus.Send(_mapper.Map<Delivery.Commands.DeliverOrder>(model));
+            await SendCommandAsync<DeliverOrder>(model);
             return Accepted();
         }
     }

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\domainD\src\domainD\domainD.csproj" />
+    <PackageReference Include="domainD" Version="0.1.0" />
   </ItemGroup>
 
 </Project>

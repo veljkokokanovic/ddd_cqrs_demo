@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\domainD\src\domainD\domainD.csproj" />
     <ProjectReference Include="..\..\..\..\..\Shared\SharedKernel\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
 

@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\domainD\src\domainD.Repository.NEventStore\domainD.Repository.NEventStore.csproj" />
     <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
     <ProjectReference Include="..\..\Domain\Delivery.Commands\Delivery.Commands\Delivery.Commands.csproj" />
     <ProjectReference Include="..\..\Domain\Delivery.Domain\Delivery.Domain\Delivery.Domain.csproj" />
