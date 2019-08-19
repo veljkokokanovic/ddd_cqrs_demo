@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Order.Commands;
+using System;
 using UI.Gateway.Models.Order.Commands;
 
 namespace UI.Gateway.Models.Order
@@ -21,7 +22,7 @@ namespace UI.Gateway.Models.Order
                 .ForMember(d => d.Sku, o => o.MapFrom(s => s.Id.Sku));
 
             CreateMap<ReadModel.Delivery.Order, OrderViewModel>()
-                .ForMember(d => d.DeliveryAddress, o => o.MapFrom(s => s.ToString()))
+                .ForMember(d => d.DeliveryAddress, o => o.MapFrom(s => string.Join(Environment.NewLine,s.DeliveryAddress.Line1, s.DeliveryAddress.Line2, s.DeliveryAddress.PostCode)))
                 .ForMember(d => d.Status, o => o.MapFrom((s, d, m, ctx) => {
                     switch(s.Status)
                     {
