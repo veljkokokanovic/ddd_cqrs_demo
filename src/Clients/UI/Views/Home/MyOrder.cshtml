@@ -4,11 +4,15 @@
 @{
     ViewData["Title"] = "My Order";
 }
+    <script type="text/javascript">
+    var orderId = '@(Model.Order != null ? Model.Order.orderId : System.Guid.NewGuid())'
+    </script>
+    <div id="spinner"></div>
 <h1>@ViewData["Title"]</h1>
 
 <p>Add Pizza</p>
 <p>
-    <select>
+    <select id="newPizza">
         <option value="">Select pizza</option>
         @foreach(var pizza in Model.Pizzas){
 
@@ -20,7 +24,7 @@
 
 <p>Add Drink</p>
 <p>
-    <select>
+    <select id="newDrink">
         <option value="">Select drink</option>
         @foreach(var drink in Model.Drinks){
 
@@ -35,17 +39,18 @@
 <p>
     @if(Model.Order != null){
     <table>
-        @foreach(var product in Model.Order.products){
         <tr>
             <th>Item</th>
             <th>Quantity</th>
             <th>Action</th>
         </tr>
+        @foreach(var product in Model.Order.products){
+
         <tr>
             <td>@product.name (@product.category)</td>
             <td>
-                <select>
-                    @for(int i = 1; i < 6; i++){   
+                <select id="@product.sku">
+                    @for(int i = 1; i < 6; i++){
                     <option value="@i" selected="@(i == product.quantity.Value)">@i</option>
                     }
                 </select>
@@ -56,3 +61,6 @@
     </table>
     }
 </p>
+<script src="~/lib/aspnet-signalr/signalr.min.js"></script>
+<script src="~/lib/spin.js/spin.min.js"></script>
+<script src="~/js/order.js"></script>

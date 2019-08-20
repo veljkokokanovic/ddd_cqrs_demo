@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Console.Host;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Order.ProcessManager
 {
@@ -14,7 +14,11 @@ namespace Order.ProcessManager
             System.Console.Title = "Process Manager";
 
             await new HostBuilder()
-                .AddConfigFile()
+                .ConfigureAppConfiguration(b =>
+                {
+                    b.SetBasePath(Directory.GetCurrentDirectory());
+                    b.AddJsonFile("appsettings.json", optional: false);
+                })
                 .ConfigureServices(ServicesConfigurator.ConfigureBus)
                 .ConfigureLogging((hostingContext, logging) =>
                 {

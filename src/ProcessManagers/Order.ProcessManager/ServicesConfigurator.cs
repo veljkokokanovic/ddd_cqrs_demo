@@ -1,10 +1,9 @@
-﻿using Console.Host;
-using Console.Host.Filters;
-using GreenPipes;
+﻿using GreenPipes;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.EntityFrameworkCoreIntegration.Saga;
 using MassTransit.Extensions;
+using MassTransit.Extensions.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

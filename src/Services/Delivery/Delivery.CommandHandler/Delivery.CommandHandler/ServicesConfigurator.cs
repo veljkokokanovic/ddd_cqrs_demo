@@ -1,11 +1,10 @@
-﻿using Console.Host;
-using Console.Host.Filters;
-using Delivery.Commands;
+﻿using Delivery.Commands;
 using domainD;
 using domainD.Repository.NEventStore;
 using GreenPipes;
 using MassTransit;
 using MassTransit.Extensions;
+using MassTransit.Extensions.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NEventStore;

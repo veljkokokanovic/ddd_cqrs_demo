@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using domainD.Repository;
+﻿using domainD;
 using GreenPipes;
-using MassTransit;
-using MassTransit.Extensions;
+using System;
+using System.Threading.Tasks;
 
-namespace Console.Host.Filters
+namespace MassTransit.Extensions.Filters
 {
     public class OperationContextFilter : IFilter<ConsumeContext>
     {
@@ -20,6 +18,8 @@ namespace Console.Host.Filters
             {
                 OperationContext.UserId = userIdGuid;
             }
+
+            OperationContext.CommandId = context.MessageId;
 
             return next.Send(context);
         }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using domainD;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace UI.Gateway.Attributes
 {
@@ -11,10 +11,11 @@ namespace UI.Gateway.Attributes
     {
         public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var correlationId = Guid.NewGuid().ToString();
+            OperationContext.CorrelationId = Guid.NewGuid();
+            OperationContext.UserId = Constants.DefaultUserId;
 
             context.HttpContext.Response.Headers.Add(
-                new KeyValuePair<string, StringValues>(KnownHeaders.CorrelationId, new StringValues(correlationId)));
+                new KeyValuePair<string, StringValues>(KnownHeaders.CorrelationId, new StringValues(OperationContext.CorrelationId.ToString())));
             return next();
         }
     }

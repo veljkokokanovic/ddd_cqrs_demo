@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Console.Host;
 using domainD.Repository.NEventStore;
 using MassTransit;
 using MassTransit.Extensions;
+using MassTransit.Extensions.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NEventStore.Persistence.Sql;
@@ -23,6 +23,7 @@ namespace NEventStore.EventSubscription
                 {
                     cfg.UseInMemoryOutbox();
                     var host = cfg.ConfigureHost(context.Configuration.GetSection("Bus"));
+                    cfg.ConfigurePublish(p => p.AddPipeSpecification(new PublishContextEstablisher()));
                 }));
             });
 

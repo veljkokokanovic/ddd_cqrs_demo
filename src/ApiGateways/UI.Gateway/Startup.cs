@@ -1,4 +1,8 @@
-﻿using MassTransit;
+﻿using AutoMapper;
+using Delivery.Commands;
+using MassTransit;
+using MassTransit.Extensions;
+using MassTransit.Extensions.Filters;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,17 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using AutoMapper;
-using Delivery.Commands;
-using GreenPipes;
-using MassTransit.Extensions;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Converters;
 using Order.Commands;
+using System;
+using System.Net.Http.Headers;
 using PlaceOrder = Order.Commands.PlaceOrder;
 
 namespace UI.Gateway
@@ -58,6 +55,16 @@ namespace UI.Gateway
                 }).Services
                 .AddHttpContextAccessor()
                 .AddMassTransit(ConfigureBus);
+
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithExposedHeaders(KnownHeaders.CorrelationId)
+                .WithOrigins("http://localhost:7000");
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +74,8 @@ namespace UI.Gateway
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseMvc();
         }
@@ -79,7 +88,7 @@ namespace UI.Gateway
                 var host = cfg.ConfigureHost(busConfig);
                 cfg.ConfigureSend(sendPipe =>
                 {
-                    sendPipe.UseSendFilter(new OperationContextEstablisher(provider));
+                    sendPipe.UseSendFilter(new OperationContextEstablisher());
                 });
 
                 EndpointConvention.Map<AddProductToOrder>(new Uri(new Uri(busConfig["Host"]), nameof(AddProductToOrder)));
@@ -92,34 +101,6 @@ namespace UI.Gateway
                 EndpointConvention.Map<ReturnOrder>(new Uri(new Uri(busConfig["Host"]), nameof(ReturnOrder)));
                 EndpointConvention.Map<DeliverOrder>(new Uri(new Uri(busConfig["Host"]), nameof(DeliverOrder)));
             }));
-        }
-    }
-
-    public class OperationContextEstablisher : IFilter<SendContext>
-    {
-        private IServiceProvider _serviceProvider;
-
-        public OperationContextEstablisher(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-
-        public Task Send(SendContext context, IPipe<SendContext> next)
-        {
-            var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            if (httpContext.Response.Headers.ContainsKey(KnownHeaders.CorrelationId))
-            {
-                context.Headers.Set(MassTransit.Extensions.KnownHeaders.CorrelationId, httpContext.Response.Headers[KnownHeaders.CorrelationId].FirstOrDefault());
-            }
-
-            context.Headers.Set(MassTransit.Extensions.KnownHeaders.UserId, "11111111-1111-1111-1111-111111111111");
-
-            return next.Send(context);
-        }
-
-        public void Probe(ProbeContext context)
-        {
-            context.CreateFilterScope(nameof(OperationContextEstablisher));
         }
     }
 }

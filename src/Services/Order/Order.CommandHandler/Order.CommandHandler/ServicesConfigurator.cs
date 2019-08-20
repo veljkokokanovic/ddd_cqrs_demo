@@ -3,6 +3,7 @@ using domainD.Repository.NEventStore;
 using GreenPipes;
 using MassTransit;
 using MassTransit.Extensions;
+using MassTransit.Extensions.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NEventStore;
@@ -14,8 +15,6 @@ using Order.Commands;
 using System;
 using System.Data.SqlClient;
 using System.Linq;
-using Console.Host;
-using Console.Host.Filters;
 
 namespace Order.CommandHandler
 {

@@ -26,6 +26,7 @@ namespace UI.Gateway.Controllers
             var products = await productsResponse.ResultAsync<IEnumerable<ProductViewModel>>();
             var command = CommandMapper.Map<AddProductToOrder>(model);
             command.Price = products.First(p => p.Sku == command.Sku).Price;
+            command.UserId = Constants.DefaultUserId;
             await Bus.Send(command);
             return Accepted();
         }

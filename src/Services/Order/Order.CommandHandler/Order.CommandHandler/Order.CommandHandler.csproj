@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="domainD.Repository.NEventStore" Version="0.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared\CommandHandler.Host\Console.Host.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\MassTransit.Extensions\MassTransit.Extensions.csproj" />
     <ProjectReference Include="..\..\Domain\Order.Commands\Order.Commands\Order.Commands.csproj" />
     <ProjectReference Include="..\..\Domain\Order.Domain\Order.Domain\Order.Domain.csproj" />
   </ItemGroup>

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
 
-namespace Console.Host
+namespace MassTransit.Extensions
 {
     public class BusService : IHostedService
     {

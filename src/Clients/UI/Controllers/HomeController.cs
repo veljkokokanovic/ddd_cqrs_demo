@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using UI.Models;
+using UI.SignalR;
 
 namespace UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
 
         public HomeController(IConfiguration configuration)
@@ -36,7 +36,7 @@ namespace UI.Controllers
         public async Task<IActionResult> MyOrder()
         {
             var products = await ResultAsync("products");
-            var orders = await ResultAsync("orders?userId=11111111-1111-1111-1111-111111111111&status=placed");
+            var orders = await ResultAsync($"orders?userId={DefaultUserIdProvider.UserId}&status=pending");
 
             dynamic model = new ExpandoObject();
             model.Pizzas = ((IEnumerable)products).Cast<dynamic>().Where(p => p.category == "Pizza");

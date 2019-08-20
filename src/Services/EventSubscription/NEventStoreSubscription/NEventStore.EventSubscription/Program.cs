@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Console.Host;
-using domainD.EventSubscription;
+﻿using domainD.EventSubscription;
 using domainD.EventSubscription.NEventStore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Order.Events;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
+using Order.Events;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NEventStore.EventSubscription
 {
@@ -17,7 +17,11 @@ namespace NEventStore.EventSubscription
             System.Console.Title = "Event Subscriptions";
 
             await new HostBuilder()
-                .AddConfigFile()
+                .ConfigureAppConfiguration(b =>
+                {
+                    b.SetBasePath(Directory.GetCurrentDirectory());
+                    b.AddJsonFile("appsettings.json", optional: false);
+                })
                 .AddEventSubscription<NEventStoreEventSubscription>(cfg => cfg
                     .UseFileCheckpointLoader()
                     .On<ProductAddedToOrder>().HandleAsync(HandlerFor.ProductAddedToOrder)
