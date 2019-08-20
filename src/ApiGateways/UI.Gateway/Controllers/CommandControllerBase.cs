@@ -2,7 +2,6 @@
 using domainD;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UI.Gateway.Attributes;

@@ -80,6 +80,7 @@ namespace UI
         {
             configurator.AddConsumer<ProductAddedToOrderConsumer>();
             configurator.AddConsumer<ProductQuantityChangedConsumer>();
+            configurator.AddConsumer<CommandErrorConsumer>();
             configurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 var busConfig = Configuration.GetSection("Bus");
@@ -88,6 +89,7 @@ namespace UI
                 {
                     e.ConfigureConsumer<ProductAddedToOrderConsumer>(provider);
                     e.ConfigureConsumer<ProductQuantityChangedConsumer>(provider);
+                    e.ConfigureConsumer<CommandErrorConsumer>(provider);
                 });
             }));
         }

@@ -7,5 +7,7 @@ namespace UI.SignalR
         public bool Success { get; set; } = true;
 
         public Guid CorrelationId { get; set; }
+
+        public string Description { get; set; }
     }
 }

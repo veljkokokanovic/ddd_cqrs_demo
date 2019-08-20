@@ -36,7 +36,8 @@ connection.on("CommandMessage", function (message, user) {
         }
     }
     else {
-        alert('command failed');
+        spinner.stop();
+        alert(message.description);
     }
 });
 
@@ -51,7 +52,7 @@ document.getElementById("newPizza").addEventListener("change", function (event) 
     if (newPizza.value != "") {
         var data = {
             orderId: orderId,
-            quantity: 1,
+            quantity: -1,
             sku: newPizza.value
         };
 
@@ -82,7 +83,7 @@ document.getElementById("newDrink").addEventListener("change", function (event) 
     if (newDrink.value != "") {
         var data = {
             orderId: orderId,
-            quantity: 1,
+            quantity: -1,
             sku: newDrink.value
         };
 
