@@ -19,7 +19,7 @@ namespace Order.ProcessManager.Sagas
             _logger = logger;
 
             InstanceState(x => x.CurrentState);
-            SetCompletedWhenFinalized();
+            //SetCompletedWhenFinalized();
 
             Event(() => OrderPlacedEvent, c => c.CorrelateById(ctx => ctx.Message.AggregateRootId));
             Event(() => OrderDeliveredEvent, c => c.CorrelateById(ctx => ctx.Message.ReferenceOrderId));

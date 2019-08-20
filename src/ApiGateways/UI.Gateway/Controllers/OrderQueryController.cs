@@ -45,7 +45,7 @@ namespace UI.Gateway.Controllers
         public async Task<ActionResult> GetUserOrdersAsync([FromQuery] Guid userId, [FromQuery] OrderStatus? status)
         {
             var productsTask = GetAsync(HttpClients.ProductApi, "products");
-            var ordersQuery = $"orders?userId={userId}{(status.HasValue ? "&status=" + status.Value : "")}";
+            var ordersQuery = $"orders?userId={userId}{(status.HasValue ? "&status=" + MapStatus(status.Value) : "")}";
             var ordersRequest = await GetAsync(HttpClients.OrderApi, ordersQuery);
             var orders = await ordersRequest.ResultAsync<IEnumerable<ReadModel.Order.Order>>();
             var deliveriesResponse = await GetAsync(HttpClients.DeliveryApi, $"deliveries?{string.Join("&", orders.Select(o => "oid="+o.Id))}");
@@ -69,6 +69,27 @@ namespace UI.Gateway.Controllers
             }
 
             return Ok(ordersViewModel);
+        }
+
+        private ReadModel.Order.OrderStatus MapStatus(OrderStatus uiStatus)
+        {
+            switch(uiStatus)
+            {
+                case OrderStatus.Pending:
+                    return ReadModel.Order.OrderStatus.Pending;
+                case OrderStatus.Placed:
+                    return ReadModel.Order.OrderStatus.Placed;
+                case OrderStatus.Cancelled:
+                    return ReadModel.Order.OrderStatus.Cancelled;
+                case OrderStatus.Returned:
+                    return ReadModel.Order.OrderStatus.Failed;
+                case OrderStatus.Delivered:
+                    return ReadModel.Order.OrderStatus.Completed;
+                case OrderStatus.Delivering:
+                    return ReadModel.Order.OrderStatus.Placed;
+                default:
+                    throw new InvalidOperationException();
+            }
         }
     }
 }

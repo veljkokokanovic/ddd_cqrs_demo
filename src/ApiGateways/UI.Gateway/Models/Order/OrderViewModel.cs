@@ -21,7 +21,9 @@ namespace UI.Gateway.Models.Order
 
         public DateTime? DeliveredAt { get; set; }
 
-        public DateTime DeliveryDate { get; set; }
+        public DateTime? DeliveryStartedAt { get; set; }
+
+        public DateTime? DeliveryDate { get; set; }
 
         public string DeliveryAddress { get; set; }
 
